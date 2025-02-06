@@ -1,0 +1,267 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+using namespace std;
+
+struct Team {
+	string teamName;
+	string driver1Name;
+	string driver2Name;
+	string ceoName;
+	int stuffNumber = 0;
+	int sponsorsCount = 0;
+	vector <string> sponsorsNames;
+};
+void print_teams(vector <Team> teams) {
+	for (int i = 0; i < teams.size(); i++) {
+		cout << "Команда " << i + 1 << " - ";
+		cout << teams[i].teamName << endl;
+		cout << "Имя первого пилота - " << teams[i].driver1Name << endl;
+		cout << "Имя второго пилота - " << teams[i].driver2Name << endl;
+		cout << "Имя директора - " << teams[i].ceoName << endl;
+		cout << "Количество сотрудников - " << teams[i].stuffNumber << endl;
+		cout << "Количество спонсоров - " << teams[i].sponsorsCount << endl;
+		for (int j = 0; j < teams[i].sponsorsNames.size(); j++) {
+			cout << "Спонсор " << j + 1 << " - " << teams[i].sponsorsNames[j] << endl;
+		}
+		cout << "-----------------------------------------------------------" << endl;
+	}
+}
+void delete_team(vector <Team> & teams) {
+	for (int i = 0; i < teams.size(); i++) {
+		cout << "Команда " << i + 1 << " - ";
+		cout << teams[i].teamName << endl;
+	}
+	int x;
+	cout << "Напишите номер команды которую хотите удалить: ";
+	cin >> x;
+	cout << endl;
+	if (x <= teams.size() && 0 < x) {
+		teams.erase(teams.begin() + x - 1);
+		cout << "Команда удалена!" << endl;
+	}
+	else {
+		cout << "Неправильный номер команды!" << endl;
+	}
+}
+void edit_team(vector <Team> & teams) {
+	string tempsponsorname = " ";
+	for (int i = 0; i < teams.size(); i++) {
+		cout << "Команда " << i + 1 << " - ";
+		cout << teams[i].teamName << endl;
+	}
+	cout << "Введите номер команды которой хотите редактировать: ";
+	int teamn;
+	cin >> teamn;
+	cout << endl;
+	if (teamn > 0 && teamn <= teams.size()) {
+		cout << "Введите, что вы хотите редактировать: " << endl;
+		cout << "1 - имя команды" << endl
+			<< "2 - имя первого пилота" << endl
+			<< "3 - имя второго пилота" << endl
+			<< "4 - имя директора" << endl
+			<< "5 - количество сотрудников" << endl
+			<< "6 - спонсоров" << endl;
+		int operation;
+		cin >> operation;
+		switch (operation) {
+		case 1:
+			cout << "Введите новое имя команды: ";
+			cin >> teams[teamn - 1].teamName;
+			break;
+		case 2:
+			cout << "Введите имя нового первого пилота: ";
+			cin >> teams[teamn - 1].driver1Name;
+			break;
+		case 3:
+			cout << "Введите имя нового второго пилота: ";
+			cin >> teams[teamn - 1].driver2Name;
+			break;
+		case 4:
+			cout << "Введите имя нового директора: ";
+			cin >> teams[teamn - 1].ceoName;
+			break;
+		case 5:
+			cout << "Введите новое количество сотрудников: ";
+			cin >> teams[teamn - 1].stuffNumber;
+			break;
+		case 6:
+			cout << "Введите, что вы хотите сделать: " << endl;
+			cout << "1 - добавить спонсора" << endl
+				<< "2 - редактировать спонсора" << endl
+				<< "3 - удалить спонсора" << endl;
+			int sponsoroperation;
+			cin >> sponsoroperation;
+			int sponsoreditn;
+			switch (sponsoroperation) {
+			case 1:
+				cout << "Введите имя спонсора: ";
+				cin >> tempsponsorname;
+				teams[teamn - 1].sponsorsNames.push_back(tempsponsorname);
+				teams[teamn - 1].sponsorsCount++;
+				break;
+			case 2:
+				cout << "Введите номер спонсора для редактирования: " << endl;
+				for (int j = 0; j < teams[teamn - 1].sponsorsNames.size(); j++) {
+					cout << "Спонсор " << j + 1 << " - " << teams[teamn - 1].sponsorsNames[j] << endl;
+				}
+				cin >> sponsoreditn;
+				if (sponsoreditn > 0 && sponsoreditn <= teams[teamn - 1].sponsorsNames.size()) {
+					cout << "Введите новое имя спонсора: ";
+					cin >> teams[teamn - 1].sponsorsNames[sponsoreditn - 1];
+				}
+				else {
+					cout << "Неверный номер спонсора!" << endl;
+				}
+				break;
+			case 3:
+				cout << "Введите номер спонсора для удаления: " << endl;
+				for (int j = 0; j < teams[teamn - 1].sponsorsNames.size(); j++) {
+					cout << "Спонсор " << j + 1 << " - " << teams[teamn - 1].sponsorsNames[j] << endl;
+				}
+				cin >> sponsoreditn;
+				if (sponsoreditn > 0 && sponsoreditn <= teams[teamn - 1].sponsorsNames.size()) {
+					teams[teamn - 1].sponsorsNames.erase(teams[teamn - 1].sponsorsNames.begin() + sponsoreditn - 1);
+					cout << "Спонсор удален!" << endl;
+					teams[teamn - 1].sponsorsCount--;
+				}
+				else {
+					cout << "Неверный номер спонсора!" << endl;
+				}
+				break;
+			default: cout << "Неправильная команда!" << endl;
+			}
+			break;
+		default: cout << "Неправильная команда!" << endl;
+			break;
+		}
+	}
+	else {
+		cout << "Неправильный номер команды!" << endl;
+	}
+}
+void add_team(vector <Team> & teams) {
+	Team temp;
+	cout << "Введите имя команды: ";
+	getline(cin, temp.teamName);
+	cout << "Введите имя первого пилота: ";
+	getline(cin, temp.driver1Name);
+	cout << "Введите имя второго пилота: ";
+	getline(cin, temp.driver2Name);
+	cout << "Введите имя директора: ";
+	getline(cin, temp.ceoName);
+	cout << "Введите количество сотрудников: ";
+	cin >> temp.stuffNumber;
+	cin.ignore();
+	cout << "Введите количество спонсоров: ";
+	cin >> temp.sponsorsCount;
+	cin.ignore();
+	temp.sponsorsNames.resize(temp.sponsorsCount);
+	for (int i = 0; i < temp.sponsorsCount; i++) {
+		cout << "Введите спонсора " << i + 1 << ": ";
+		getline(cin, temp.sponsorsNames[i]);
+	}
+	cout << "-----------------------------------------------------------";
+	teams.push_back(temp);
+}
+void save_teams(vector <Team> teams) {
+	string path = "";
+	cout << "Введите имя файла" << endl;
+	cin >> path;
+	ofstream fileOut(path);
+	if (fileOut.is_open()) {
+		fileOut << teams.size() << endl;
+		for (int i = 0; i < teams.size(); i++) {
+			fileOut << teams[i].teamName << endl;
+			fileOut << teams[i].driver1Name << endl;
+			fileOut << teams[i].driver2Name << endl;
+			fileOut << teams[i].ceoName << endl;
+			fileOut << teams[i].stuffNumber << endl;
+			fileOut << teams[i].sponsorsCount << endl;
+			for (int j = 0; j < teams[i].sponsorsNames.size(); j++) {
+				fileOut << teams[i].sponsorsNames[j] << endl;
+			}
+		}
+		cout << "Файл сохранен" << endl;
+	}
+	else {
+		cout << "Нет доступа к файлу" << endl;
+	}
+}
+void load_teams(vector <Team> & teams) {
+	teams.clear();
+	string path;
+	cout << "Введите имя файла" << endl;
+	cin >> path;
+	ifstream fileIn(path);
+	if (fileIn.is_open()) {
+		int n;
+		fileIn >> n;
+		fileIn.ignore();
+		for (int i = 0; i < n; i++) {
+			Team temp;
+			getline(fileIn, temp.teamName);
+			getline(fileIn, temp.driver1Name);
+			getline(fileIn, temp.driver2Name);
+			getline(fileIn, temp.ceoName);
+			fileIn >> temp.stuffNumber;
+			fileIn.ignore();
+			fileIn >> temp.sponsorsCount;
+			fileIn.ignore();
+			temp.sponsorsNames.resize(temp.sponsorsCount);
+			for (int i = 0; i < temp.sponsorsCount; i++) {
+				getline(fileIn, temp.sponsorsNames[i]);
+			}
+			teams.push_back(temp);
+		}
+		cout << "Команды загружены из файла" << endl;
+	}
+	else {
+		cout << "Нет доступа к файлу" << endl;
+	}
+}
+int main() {
+	setlocale(LC_ALL, "RU");
+	
+	vector <Team> teams;
+	cout << "Добро пожаловать в программу F1 Teams!" << endl;
+	while (true) {
+		cout << "Выберите действие из списка" << endl <<
+			"1-Добавить команду" << endl <<
+			"2-Редактировать команду" << endl <<
+			"3-Убрать команду" << endl <<
+			"4-Вывести список команд" << endl <<
+			"5-Сохранить команды в файлы" << endl <<
+			"6-Загрузить команды из файла" << endl;
+		int n;
+		cin >> n;
+		cin.ignore();
+		cout << "-----------------------------------------------------------" << endl;
+		
+		switch (n) {
+		case 1:
+			add_team(teams);
+			break;
+		case 2:
+			edit_team(teams);
+			break;
+		case 3:
+			delete_team(teams);
+			break;
+		case 4:
+			print_teams(teams);
+			break;
+		case 5:
+			save_teams(teams);
+			break;
+		case 6:
+			load_teams(teams);
+		break;
+		default: cout << "Неверная команда" << endl;
+			break;
+		}
+		cout << endl;
+	}
+	return 0;
+}
